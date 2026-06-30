@@ -32,8 +32,9 @@ export default function Login() {
   }
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google'
-  }
+  const apiUrl = import.meta.env.VITE_API_URL || '/api'
+  window.location.href = `${apiUrl}/auth/google`
+}
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 py-10">
