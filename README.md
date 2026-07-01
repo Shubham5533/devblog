@@ -8,6 +8,23 @@
 
 A production-grade blogging platform built with the MERN stack (MongoDB, Express, React, Node.js) and Redux Toolkit for state management.
 
+## Screenshots
+
+### Home Page
+![Home](screenshots/home.png)
+
+### Single Post
+![Post](screenshots/post.png)
+
+### Rich Text Editor
+![Editor](screenshots/editor.png)
+
+### Dark Mode
+![Dark Mode](screenshots/dark-mode.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
 ## ✨ Features
 
 ### Authentication
