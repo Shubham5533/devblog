@@ -15,6 +15,7 @@ passport.use(new LocalStrategy(
       if (!match) return done(null, false, { message: 'Invalid email or password' });
       return done(null, user);
     } catch (err) {
+      console.error('Local auth error:', err.message);
       return done(err);
     }
   }
@@ -32,18 +33,22 @@ passport.use(new GoogleStrategy(
       let user = await User.findOne({ googleId: profile.id });
 
       if (!user) {
-        // Check if email already exists (link accounts)
-        user = await User.findOne({ email: profile.emails[0].value });
+        const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
+        if (!email) {
+          return done(new Error('No email returned from Google profile'));
+        }
+
+        user = await User.findOne({ email });
         if (user) {
           user.googleId = profile.id;
-          if (!user.avatar) user.avatar = profile.photos[0]?.value || '';
+          if (!user.avatar) user.avatar = (profile.photos && profile.photos[0]) ? profile.photos[0].value : '';
           await user.save();
         } else {
           user = await User.create({
             googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            avatar: profile.photos[0]?.value || '',
+            name: profile.displayName || 'Google User',
+            email,
+            avatar: (profile.photos && profile.photos[0]) ? profile.photos[0].value : '',
             isVerified: true,
           });
         }
@@ -51,6 +56,12 @@ passport.use(new GoogleStrategy(
 
       return done(null, user);
     } catch (err) {
+      console.error('Google OAuth error:', err.message);
+      if (err.errors) {
+        Object.keys(err.errors).forEach(key => {
+          console.error('  Field "' + key + '":', err.errors[key].message);
+        });
+      }
       return done(err);
     }
   }

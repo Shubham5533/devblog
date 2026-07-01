@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 80 },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, select: false, minlength: 6 },
-  googleId: { type: String, sparse: true },
+  googleId: { type: String,unique:true, sparse: true },
   avatar: { type: String, default: '' },
   bio: { type: String, default: '', maxlength: 400 },
   website: { type: String, default: '' },
