@@ -98,8 +98,7 @@ router.get('/google/callback', (req, res, next) => {
     try {
       const token = generateToken(user._id);
       setCookie(res, token);
-      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}?auth=success`);
-    } catch (e) {
+      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}?auth=success&token=${token}`);    } catch (e) {
       console.error('Token generation error:', e.message);
       res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
     }

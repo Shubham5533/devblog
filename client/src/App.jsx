@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCurrentUser } from './store/slices/authSlice'
 import Navbar from './components/common/Navbar'
@@ -14,6 +14,33 @@ import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
 import SavedPosts from './pages/SavedPosts'
 import NotFound from './pages/NotFound'
+import { addToast } from './store/slices/uiSlice'
+
+function AuthSuccessHandler() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    if (params.get('auth') === 'success') {
+      const token = params.get('token')
+      if (token) {
+        localStorage.setItem('token', token)
+      }
+      dispatch(fetchCurrentUser()).then(() => {
+        dispatch(addToast({ type: 'success', message: 'Logged in with Google! 🎉' }))
+        navigate('/', { replace: true })
+      })
+    }
+    if (params.get('error') === 'google_failed') {
+      dispatch(addToast({ type: 'error', message: 'Google login failed. Try again.' }))
+      navigate('/login', { replace: true })
+    }
+  }, [location.search, dispatch, navigate])
+
+  return null
+}
 
 function PrivateRoute({ children }) {
   const { user, initializing } = useSelector(s => s.auth)
@@ -36,6 +63,7 @@ export default function App() {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
       <BrowserRouter>
+        <AuthSuccessHandler />
         <Navbar />
         <ToastContainer />
         <Routes>
