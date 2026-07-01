@@ -3,7 +3,10 @@ import api from '../../utils/api'
 
 export const fetchPosts = createAsyncThunk('posts/fetchAll', async (params = {}, { rejectWithValue }) => {
   try {
-    const query = new URLSearchParams(params).toString()
+    const cleanParams = Object.fromEntries(
+      Object.entries(params).filter(([_, v]) => v != null && v !== 'null' && v !== '')
+    )
+    const query = new URLSearchParams(cleanParams).toString()
     const res = await api.get(`/posts?${query}`)
     return res.data
   } catch (err) {
