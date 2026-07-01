@@ -76,14 +76,25 @@ router.get('/google',
   passport.authenticate('google', { scope: ['profile', 'email'], session: false })
 );
 
-router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${process.env.CLIENT_URL}/login?error=google_failed` }),
-  (req, res) => {
-    const token = generateToken(req.user._id);
-    setCookie(res, token);
-    res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}?auth=success`);
-  }
-);
+router.get('/google/callback', (req, res, next) => {
+  passport.authenticate('google', { session: false }, (err, user, info) => {
+    if (err) {
+      console.error('Google callback error:', err.message);
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+    }
+    if (!user) {
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+    }
+    try {
+      const token = generateToken(user._id);
+      setCookie(res, token);
+      res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}?auth=success`);
+    } catch (e) {
+      console.error('Token generation error:', e.message);
+      res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+    }
+  })(req, res, next);
+});
 
 // ── Change password ──
 router.put('/change-password', protect, async (req, res) => {
