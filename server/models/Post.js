@@ -35,7 +35,7 @@ const postSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Auto-slug + excerpt + readTime
-postSchema.pre('save', function(next) {
+postSchema.pre('save', function() {
   if (this.isModified('title')) {
     this.slug = slugify(this.title, { lower: true, strict: true }) + '-' + Date.now();
   }
@@ -47,7 +47,6 @@ postSchema.pre('save', function(next) {
     const words = plain.split(/\s+/).length;
     this.readTime = Math.max(1, Math.ceil(words / 200));
   }
-  next();
 });
 
 postSchema.index({ title: 'text', content: 'text', tags: 'text' });
