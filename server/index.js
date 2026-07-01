@@ -15,6 +15,7 @@ const userRoutes = require('./routes/users');
 const uploadRoutes = require('./routes/upload');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Security
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
