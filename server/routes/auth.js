@@ -6,6 +6,16 @@ const User = require('../models/User');
 const { generateToken, protect } = require('../middleware/auth');
 const { sendWelcomeEmail } = require('../utils/email');
 
+// TEMP DEBUG
+router.get('/google/test', (req, res) => {
+  res.json({
+    clientID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING',
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || 'NOT SET',
+    clientURL: process.env.CLIENT_URL || 'NOT SET',
+  });
+});
+
 const setCookie = (res, token) => {
   res.cookie('token', token, {
     httpOnly: true,
