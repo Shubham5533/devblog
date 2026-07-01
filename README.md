@@ -1,5 +1,11 @@
 # DevBlog — Full Stack MERN Blog Platform
 
+🔗 **Live Demo:** https://devblog-nine-psi.vercel.app  
+📦 **Backend API:** https://devblog-1mlk.onrender.com/api/health  
+💻 **GitHub:** https://github.com/Shubham5533/devblog
+
+> ⚠️ Note: Backend is on Render free tier — first request may take 30-50 seconds to wake up.
+
 A production-grade blogging platform built with the MERN stack (MongoDB, Express, React, Node.js) and Redux Toolkit for state management.
 
 ## ✨ Features
